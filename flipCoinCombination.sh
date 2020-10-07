@@ -2,81 +2,23 @@
 
 declare -A dict1
 declare -A dict2
-declare -A dict3
 
 echo "welcome to flip coin combination problem"
 echo "Enter the number of times you would like to flip : "
 read n
+div=$(awk 'BEGIN{print '100'/'$n'}')
 echo "Enter Choice"
 echo "1.Singlet"
 echo "2.Doublet"
 echo "3.Triplet"
 read option
 
-case "$option" in
-
-"1")
+function one(){
  for (( i=1;i<=$n;i++ ))
  do
- num=$(( $RANDOM % 2 ))
-  if [ $num -eq 0 ]
-    then
-        echo "Head"
-        let count1++
-  else
-        echo "Tail"
-        let count2++
-  fi
-done
-dict1[Head]="$count1"
-dict1[Tail]="$count2"
-
-percentage_of_head=$(( $count1 * 5 ))
-percentage_of_tail=$(( $count2 * 5 ))
-;;
-
-#hh=1 tt=2 ht=3 th=4
-"2")
- for (( i=1;i<=$n;i++ ))
- do
- num1=$(( 1 + $RANDOM % 4 ))
+ num1=$(( 1 + $RANDOM%$1 ))
   if [ $num1 -eq 1 ]
-    then
-        echo "HH"
-        let counthh++
-  elif [ $num1 -eq 2 ]
-   then     echo "TT"
-        let counttt++
-  elif [ $num1 -eq 3 ]
-    then    echo "HT"
-        let countht++
-  else [ $num1 -eq 4 ]
-        echo "TH"
-        let countth++
-
-  fi
-done
-
-dict2[HH]="$counthh"
-dict2[TT]="$counttt"
-dict2[HT]="$countht"
-dict2[TH]="$countth"
-
-percentage_of_hh=$(( $counthh * 5 ))
-percentage_of_tt=$(( $counttt * 5 ))
-percentage_of_ht=$(( $countht * 5 ))
-percentage_of_th=$(( $countth * 5 ))
-
-;;
-
-#hhh=1 ttt=2 hht=3 hth=4 thh=5 tth=6 tht=7 htt=8
-"3")
- for (( i=1;i<=$n;i++ ))
- do
- num1=$(( 1 + $RANDOM % 8 ))
-  if [ $num1 -eq 1 ]
-    then
-        echo "HHH"
+   then     echo "HHH"
         let counthhh++
   elif [ $num1 -eq 2 ]
    then     echo "TTT"
@@ -99,31 +41,65 @@ percentage_of_th=$(( $countth * 5 ))
   else [ $num1 -eq 8 ]
         echo "HTT"
         let counthtt++
-
   fi
 done
+}
 
-dict3[HHH]="$counthhh"
-dict3[TTT]="$countttt"
-dict3[HHT]="$counthht"
-dict3[HTH]="$counthth"
-dict3[THH]="$countthh"
-dict3[TTH]="$counttth"
-dict3[THT]="$counttht"
-dict3[HTT]="$counthtt"
-
-
-#hhh=1 ttt=2 hht=3 hth=4 thh=5 tth=6 tht=7 htt=8
-
-percentage_of_hhh=$(( $counthhh * 5 ))
-percentage_of_ttt=$(( $countttt * 5 ))
-percentage_of_hht=$(( $counthht * 5 ))
-percentage_of_hth=$(( $counthth * 5 ))
-percentage_of_thh=$(( $countthh * 5 ))
-percentage_of_tth=$(( $counttth * 5 ))
-percentage_of_tht=$(( $counttht * 5 ))
-percentage_of_htt=$(( $counthtt * 5 ))
-
+case "$option" in
+"1")
+one "2"
+dict1[Head]="$counthhh"
+dict1[Tail]="$countttt"
+percentage_of_head=$(awk 'BEGIN{print '$counthhh'*'$div'}')
+percentage_of_tail=$(awk 'BEGIN{print '$countttt'*'$div'}')
+dict2[1]=$percentage_of_head
+dict2[2]=$percentage_of_tail
+for i in ${dict2[@]}
+do
+    echo "$i"
+done | sort -n
 ;;
 
+#hh=1 tt=2 ht=3 th=4
+"2")
+one "4"
+dict1[HH]="$counthhh"
+dict1[TT]="$countttt"
+dict1[HT]="$counthht"
+dict1[TH]="$counthth"
+dict2[1]=$(awk 'BEGIN{print '$counthhh'*'$div'}')
+dict2[2]=$(awk 'BEGIN{print '$countttt'*'$div'}')
+dict2[3]=$(awk 'BEGIN{print '$counthht'*'$div'}')
+dict2[4]=$(awk 'BEGIN{print '$counthth'*'$div'}')
+for i in ${dict2[@]}
+do
+    echo "$i"
+done | sort -n
+;;
+
+#hhh=1 ttt=2 hht=3 hth=4 thh=5 tth=6 tht=7 htt=8
+"3")
+one "8"
+dict1[HHH]="$counthhh"
+dict1[TTT]="$countttt"
+dict1[HHT]="$counthht"
+dict1[HTH]="$counthth"
+dict1[THH]="$countthh"
+dict1[TTH]="$counttth"
+dict1[THT]="$counttht"
+dict1[HTT]="$counthtt"
+#hhh=1 ttt=2 hht=3 hth=4 thh=5 tth=6 tht=7 htt=8
+dict2[HHH]=$(awk 'BEGIN{print '$counthhh'*'$div'}')
+dict2[TTT]=$(awk 'BEGIN{print '$countttt'*'$div'}')
+dict2[HHT]=$(awk 'BEGIN{print '$counthht'*'$div'}')
+dict2[HTH]=$(awk 'BEGIN{print '$counthth'*'$div'}')
+dict2[THH]=$(awk 'BEGIN{print '$countthh'*'$div'}')
+dict2[TTH]=$(awk 'BEGIN{print '$counttth'*'$div'}')
+dict2[THT]=$(awk 'BEGIN{print '$counttht'*'$div'}')
+dict2[HTT]=$(awk 'BEGIN{print '$counthtt'*'$div'}')
+for i in ${dict2[@]}
+do
+    echo "$i"
+done | sort -n
+;;
 esac
